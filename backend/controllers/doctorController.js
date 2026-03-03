@@ -57,7 +57,9 @@ export const getDoctorById=async (req,res) => {
         const [doctors]=await db.query(
             `
             select
-            d.id d.speciality d.experience_years,d.consultation_fee,d.bio,d.available_days,d.available_time,
+            d.id, d.speciality, d.experience_years,
+            d.consultation_fee, d.bio, d.available_days,
+            d.available_time,
             u.id as user_id, u.full_name, u.email, u.phone, u.profile_image
             from doctors d
             join users u
@@ -83,7 +85,8 @@ export const getMyDoctorProfile=async (req,res) => {
         const [doctors]=await db.query(
             `
             select
-            d.id d.speciality d.experience_years,d.consultation_fee,d.bio,d.available_days,d.available_time,
+            d.id, d.speciality, d.experience_years,d.consultation_fee,
+            d.bio,d.available_days,d.available_time,
             u.full_name, u.email, u.phone, u.profile_image
             from doctors d
             join users u

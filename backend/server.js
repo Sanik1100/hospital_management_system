@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import db from './config/db.js';
 import dotenv from 'dotenv';
-import router from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import doctorRoutes from './routes/doctorRoutes.js'
+import patientRoutes from './routes/patientRoutes.js'
 
 dotenv.config();
 
@@ -13,7 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth',router);
+app.use('/api/auth',authRoutes);
+app.use('/api/doctors',doctorRoutes);
+app.use('/api/patients',patientRoutes);
 
 // test route
 app.get('/',(req,res)=>{
