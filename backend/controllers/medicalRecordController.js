@@ -212,10 +212,14 @@ try {
 // Shows file cards (pdf,jpg,docx) with size + date
 export const uploadReportFile=async (req,res) => {
     try {
+
+         console.log("BODY:",req.body);
+        console.log("FILE:",req.file);
+
         const {record_id}=req.body;
 
         if(!req.file){
-            return res.status(400).josn({message:'No file uploaded'});
+            return res.status(400).json({message:'No file uploaded'});
         }
         if(!record_id){
             return res.status(400).json({message:'Record ID is required'});
@@ -256,4 +260,120 @@ export const uploadReportFile=async (req,res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
     }
     
-}
+};
+
+// delete uploaded report file
+// from: Medical Records page -> delete file icon
+export const deleteReportFile=async (req,res) => {
+    try {
+        const {file_id}=req.params;
+
+        const [fileRows]=await db.query(
+        `select * from medical_report_files where id = ?`,[file_id]
+        );
+        {/* 
+fileRows = [
+  {
+    id: 5,
+    record_id: 21,
+    file_url: "/uploads/medical-reports/report1.pdf"
+  }
+]
+*/}
+
+        if(fileRows.length === 0){
+            return res.status(404).json({ message:'File not found'});
+        }
+
+        const filePath= `.${fileRows[0].file_url}`;
+        // filePath = "./uploads/medical-reports/report1.pdf"
+
+        // delete from filesystem
+        if(fs.existsSync(filePath)){
+            fs.unlinkSync(filePath);
+            {/* unlink → delete file
+             Sync   → synchronous operation */}
+             // Server waits until file is deleted.
+        }
+
+        // delete from DB
+        await db.query(
+            'delete from medical_report_files where id = ? ',[file_id]
+        );
+        res.status(200).json({
+            message:'File deleted successfully'
+        });
+    } catch (error) {
+       res.status(500).json({ message: 'Server error', error: error.message });    
+    }
+    
+};
+
+// get patient vitals
+// from: Medical Records page -> Vitals tab
+// this function retrieves the latest vital signs of a patient from the database
+export const getPatientVitals=async (req,res) => {
+    try {
+        const {patient_id}=req.params;
+
+        const [vitals]=await db.query(
+        `select * from patient_vitals
+         where patient_id = ? 
+         order by recorded_at desc
+          limit 10`,[patient_id]
+        );
+        res.status(200).json({vitals});
+    } catch (error) {
+     res.status(500).json({ message: 'Server error', error: error.message });    
+    }  
+};
+
+{/*
+    vitals = [
+  {
+    id: 1,
+    patient_id: 5,
+    blood_pressure: "120/80",
+    heart_rate: 72,
+    temperature: 36.8,
+    recorded_at: "2026-03-05"
+  },
+  {
+    id: 2,
+    patient_id: 5,
+    blood_pressure: "118/79",
+    heart_rate: 70,
+    temperature: 36.7,
+    recorded_at: "2026-03-04"
+  }
+]
+    */}
+
+    // add patient vitals
+    // from: Medical Records page -> Vitals tab -> Doctor adds
+    export const addPatientVitals=async (req,res) => {
+        try {
+            const {patient_id,blood_pressure, heart_rate, temperature, weight, height,oxygen_level}=req.body;
+
+            if(!patient_id){
+                return res.status(400).json({message:'Patient ID is required'});
+            }
+
+            const [result]=await db.query(
+                `insert into patient_vitals
+                (patient_id, blood_pressure, heart_rate,temperature,weight, height,oxygen_level)
+                values (?,?,?,?,?,?,?)
+                `,[patient_id,blood_pressure,heart_rate,temperature,weight,height,oxygen_level]
+            );
+
+            res.status(201).json({
+                message:'Vitals recorded successfully',
+                vital_id: result.insertId
+            })
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error: error.message });   
+        }
+        
+    };
+
+
