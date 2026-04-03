@@ -11,6 +11,7 @@ import appointmentRoutes from './routes/appointmentRoutes.js'
 import medicalRecordRoutes from './routes/medicalRecordRoutes.js'
 import prescriptionRoutes from './routes/prescriptionRoutes.js'
 import invoiceRoutes from './routes/invoiceRoutes.js'
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/appointments',appointmentRoutes);
 app.use('/api/medical-records',medicalRecordRoutes);
 app.use('/api/prescriptions',prescriptionRoutes);
 app.use('/api/invoices',invoiceRoutes);
+app.use('/api/admin',adminRoutes);
 
 // test route
 app.get('/',(req,res)=>{
