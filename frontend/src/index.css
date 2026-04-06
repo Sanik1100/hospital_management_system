@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* ── Google Font Import ─────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ── Custom Theme (replaces tailwind.config.js) ── */
 @theme {
@@ -23,8 +25,7 @@
   --shadow-nav:  0 1px 10px rgba(0,0,0,0.1);
 }
 
-/* ── Google Font Import ─────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 
 /* ── Base Styles ────────────────────────────── */
 * {
@@ -126,11 +127,25 @@ body {
   }
 
   /* Appointment status badges */
-  .status-confirmed  { @apply badge-success; }
-  .status-pending    { @apply badge-warning; }
-  .status-cancelled  { @apply badge-danger;  }
-  .status-completed  { @apply badge-info;    }
-  .status-checked-in { @apply badge-purple;  }
+.status-confirmed {
+  @apply bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+
+.status-pending {
+  @apply bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+
+.status-cancelled {
+  @apply bg-red-100 text-red-700 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+
+.status-completed {
+  @apply bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+
+.status-checked-in {
+  @apply bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
 
   /* Typography */
   .section-title {
